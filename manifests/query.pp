@@ -4,7 +4,7 @@ define mysql::query (
   $mysql_user           = 'root',
   $mysql_password       = '',
   $mysql_host           = 'localhost',
-  $mysql_query_filepath = '/root'
+  $mysql_query_filepath = '/root/puppet-mysql'
   ) {
 
   file { "mysqlquery-${name}.sql":
@@ -23,9 +23,7 @@ define mysql::query (
       require     => File["mysqlquery-${name}.sql"],
       refreshonly => true,
       subscribe   => File["mysqlquery-${name}.sql"],
-      path        => [ "/usr/bin" , "/usr/sbin" ],
+      path        => [ '/usr/bin' , '/usr/sbin' ],
   }
 
 }
-
-
