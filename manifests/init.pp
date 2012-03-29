@@ -424,8 +424,8 @@ class mysql (
   ### Firewall management, if enabled ( firewall => true )
   if $mysql::bool_firewall == true {
     firewall { "mysql_${mysql::protocol}_${mysql::port}":
-      source      => $mysql::firewall_source,
-      destination => $mysql::firewall_destination,
+      source      => $mysql::firewall_src,
+      destination => $mysql::firewall_dst,
       protocol    => $mysql::protocol,
       port        => $mysql::port,
       action      => 'allow',

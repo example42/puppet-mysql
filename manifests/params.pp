@@ -14,6 +14,9 @@
 #
 class mysql::params {
 
+  ### Module specific parameters
+  $root_password = ''
+
   ### Application related parameters
 
   $package = $::operatingsystem ? {
