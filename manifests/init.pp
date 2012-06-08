@@ -350,7 +350,7 @@ class mysql (
     enable     => $mysql::manage_service_enable,
     hasstatus  => $mysql::service_status,
     pattern    => $mysql::process,
-    require    => Package['mysql'],
+    require    => [ Package['mysql'] , File['mysql.conf'] ]
   }
 
   file { 'mysql.conf':
