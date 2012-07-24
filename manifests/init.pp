@@ -376,7 +376,7 @@ class mysql (
       notify  => $mysql::manage_service_autorestart,
       source  => $mysql::source_dir,
       recurse => true,
-      purge   => $mysql::source_dir_purge,
+      purge   => $mysql::bool_source_dir_purge,
       replace => $mysql::manage_file_replace,
       audit   => $mysql::manage_audit,
     }
