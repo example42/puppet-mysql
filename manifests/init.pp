@@ -277,25 +277,22 @@ class mysql (
   $manage_service_enable = $mysql::bool_disableboot ? {
     true    => false,
     default => $mysql::bool_disable ? {
-      true    => false,
-      default => $mysql::bool_absent ? {
-        true  => false,
-        false => true,
-      },
+      true  => false,
+      false => true,
     },
   }
 
   $manage_service_ensure = $mysql::bool_disable ? {
-    true    => 'stopped',
-    default =>  $mysql::bool_absent ? {
-      true    => 'stopped',
-      default => 'running',
-    },
+    true  => 'stopped',
+    false => 'running',
   }
 
   $manage_service_autorestart = $mysql::bool_service_autorestart ? {
-    true    => 'Service[mysql]',
-    false   => undef,
+    false => undef,
+    true  => $mysql::bool_absent ? {
+      true  => undef,
+      false => 'Service[mysql]',
+    },
   }
 
   $manage_file = $mysql::bool_absent ? {
@@ -344,13 +341,15 @@ class mysql (
     name   => $mysql::package,
   }
 
-  service { 'mysql':
-    ensure     => $mysql::manage_service_ensure,
-    name       => $mysql::service,
-    enable     => $mysql::manage_service_enable,
-    hasstatus  => $mysql::service_status,
-    pattern    => $mysql::process,
-    require    => [ Package['mysql'] , File['mysql.conf'] ]
+  if $mysql::bool_absent == false {
+    service { 'mysql':
+      ensure     => $mysql::manage_service_ensure,
+      name       => $mysql::service,
+      enable     => $mysql::manage_service_enable,
+      hasstatus  => $mysql::service_status,
+      pattern    => $mysql::process,
+      require    => [ Package['mysql'] , File['mysql.conf'] ]
+    }
   }
 
   file { 'mysql.conf':
