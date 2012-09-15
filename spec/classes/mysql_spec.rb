@@ -33,10 +33,13 @@ describe 'mysql' do
   describe 'Test decommissioning - absent' do
     let(:params) { {:absent => true, :monitor => true , :firewall => true, :port => '42'} }
 
-    it 'should remove Package[mysql]' do should contain_package('mysql').with_ensure('absent') end 
-    it 'should stop Service[mysql]' do should contain_service('mysql').with_ensure('stopped') end
-    it 'should not enable at boot Service[mysql]' do should contain_service('mysql').with_enable('false') end
+    it 'should remove Package[mysql]' do should contain_package('mysql').with_ensure('absent') end
+    it 'should not define Service[mysql]' do should_not contain_service('mysql') end
     it 'should remove mysql configuration file' do should contain_file('mysql.conf').with_ensure('absent') end
+    it 'should not automatically restart the service, when absent => true' do
+      content = catalogue.resource('file', 'mysql.conf').send(:parameters)[:notify]
+      content.should be_nil
+    end
     it 'should not monitor the process' do
       content = catalogue.resource('monitor::process', 'mysql_process').send(:parameters)[:enable]
       content.should == false
@@ -66,7 +69,7 @@ describe 'mysql' do
 
   describe 'Test decommissioning - disableboot' do
     let(:params) { {:disableboot => true, :monitor => true , :firewall => true, :port => '42'} }
-  
+
     it { should contain_package('mysql').with_ensure('present') }
     it { should_not contain_service('mysql').with_ensure('present') }
     it { should_not contain_service('mysql').with_ensure('absent') }
@@ -80,7 +83,7 @@ describe 'mysql' do
       content = catalogue.resource('firewall', 'mysql_tcp_42').send(:parameters)[:enable]
       content.should == true
     end
-  end 
+  end
 
   describe 'Test customizations - template' do
     let(:params) { {:template => "mysql/spec.erb" , :options => { 'opt_a' => 'value_a' } } }
@@ -175,7 +178,7 @@ describe 'mysql' do
       content = catalogue.resource('firewall', 'mysql_tcp_42').send(:parameters)[:tool]
       content.should == "iptables"
     end
-    it 'should generate puppi resources ' do 
+    it 'should generate puppi resources ' do
       content = catalogue.resource('puppi::ze', 'mysql').send(:parameters)[:ensure]
       content.should == "present"
     end
