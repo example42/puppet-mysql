@@ -401,13 +401,6 @@ class mysql (
 
   ### Service monitoring, if enabled ( monitor => true )
   if $mysql::bool_monitor == true {
-    monitor::port { "mysql_${mysql::protocol}_${mysql::port}":
-      protocol => $mysql::protocol,
-      port     => $mysql::port,
-      target   => $mysql::monitor_target,
-      tool     => $mysql::monitor_tool,
-      enable   => $mysql::manage_monitor,
-    }
     monitor::process { 'mysql_process':
       process  => $mysql::process,
       service  => $mysql::service,
