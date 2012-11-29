@@ -14,6 +14,22 @@ This module requires functions provided by the Example42 Puppi module.
 
 For detailed info about the logic and usage patterns of Example42 modules read README.usage on Example42 main modules set.
 
+== USAGE - Module specific
+
+* Set a specific (cleartext) mysql root password
+
+        class { "mysql":
+          root_password => 'mys4cr3',
+        }
+
+* Set a random password ( saved in /root/.my.cnf )
+
+        class { "mysql":
+          root_password => 'auto',          
+        }
+
+
+
 == USAGE - Basic management
 
 * Install mysql with default settings
