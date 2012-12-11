@@ -1,4 +1,5 @@
-require "#{File.join(File.dirname(__FILE__),'..','spec_helper.rb')}"
+#!/usr/bin/env rspec
+require 'spec_helper'
 
 describe 'mysql' do
 
