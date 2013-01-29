@@ -60,8 +60,8 @@ define mysql::augeas (
   $section = $namesplit[0]
 
   $changes = $ensure ? {
-    present => [ "set target[.='${section}']/'${key}' '${value}'" ],
-    absent  => [ "rm target[.='${section}']/'${key}' " ],
+    present => [ "set target[.='${section}']/${key} '${value}'" ],
+    absent  => [ "rm target[.='${section}']/${key} " ],
   }
 
   augeas { "mysql_augeas-${name}":
