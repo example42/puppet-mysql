@@ -56,8 +56,8 @@ define mysql::augeas (
 
   $namesplit = split($name, '/')
 
-  $key = $namesplit[0]
-  $section = $namesplit[1]
+  $key = $namesplit[1]
+  $section = $namesplit[0]
 
   $changes = $ensure ? {
     present => [ "set target[.='${section}']/'${key}' '${value}'" ],
