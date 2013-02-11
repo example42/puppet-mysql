@@ -49,7 +49,7 @@
 define mysql::augeas (
   $ensure = present,
   $target = $mysql::config_file,
-  $value  = '',
+  $value  = ''
   ) {
 
   include mysql
