@@ -25,7 +25,7 @@
 #
 # == Parameters
 #
-# [*namey*]
+# [*name*]
 #   Augeas path to entry to be modified.
 #
 # [*ensure*]
