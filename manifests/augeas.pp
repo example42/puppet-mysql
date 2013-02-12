@@ -25,7 +25,7 @@
 #
 # == Parameters
 #
-# [*namey*]
+# [*name*]
 #   Augeas path to entry to be modified.
 #
 # [*ensure*]
@@ -49,7 +49,7 @@
 define mysql::augeas (
   $ensure = present,
   $target = $mysql::config_file,
-  $value  = '',
+  $value  = ''
   ) {
 
   include mysql
