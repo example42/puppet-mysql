@@ -19,7 +19,10 @@ define mysql::query (
   }
 
   exec { "mysqlquery-${name}":
-      command     => "mysql < ${mysql_query_filepath}/mysqlquery-${name}.sql",
+      command   => $mysql::real_root_password ? {
+        ''      => "mysql -uroot < ${mysql_query_filepath}/mysqlquery-${name}.sql",
+        default => "mysql --defaults-file=/root/.my.cnf -uroot < ${mysql_query_filepath}/mysqlquery-${name}.sql",
+      },
       require     => File["mysqlquery-${name}.sql"],
       refreshonly => true,
       subscribe   => File["mysqlquery-${name}.sql"],
