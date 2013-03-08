@@ -144,6 +144,5 @@ For detailed info about the logic and usage patterns of Example42 modules read R
         }
 
 
-## CONTINUOUS TESTING
 
-{<img src="https://travis-ci.org/example42/puppet-mysql.png?branch=master" alt="Build Status" />}[https://travis-ci.org/example42/puppet-mysql]
+[![Build Status](https://travis-ci.org/example42/puppet-mysql.png?branch=master)](https://travis-ci.org/example42/puppet-mysql)
