@@ -12,6 +12,11 @@
 #   If blank, no password is set
 #   If 'auto' a random password is generated
 #
+# [*password_salt*]
+#   Uses a salt with FQDN_RAND when generating the root password.
+#   If you do not use this, the password can be reverse engineered very easily.
+#   Example: $password_salt = 'smeg'
+#
 # Standard class parameters
 # Define the general class behaviour and customizations
 #
@@ -207,6 +212,7 @@
 #
 class mysql (
   $root_password       = params_lookup( 'root_password' ),
+  $password_salt       = params_lookup( 'password_salt' ),
   $my_class            = params_lookup( 'my_class' ),
   $source              = params_lookup( 'source' ),
   $source_dir          = params_lookup( 'source_dir' ),
@@ -260,7 +266,10 @@ class mysql (
   $bool_audit_only=any2bool($audit_only)
 
   ### Root password setup
-  $random_password = fqdn_rand(100000000000)
+  $random_password = $mysql::password_salt ? {
+    ''       => fqdn_rand(100000000000),
+    default  => fqdn_rand(100000000000,$mysql::password_salt),
+  }
 
   $real_root_password = $mysql::root_password ? {
     ''      => '',

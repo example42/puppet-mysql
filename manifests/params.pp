@@ -16,6 +16,7 @@ class mysql::params {
 
   ### Module specific parameters
   $root_password = ''
+  $password_salt = ''
 
   ### Application related parameters
 
