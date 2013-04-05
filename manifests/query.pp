@@ -1,6 +1,6 @@
 define mysql::query (
-  $mysql_db,
   $mysql_query,
+  $mysql_db             = undef,
   $mysql_user           = 'root',
   $mysql_password       = '',
   $mysql_host           = 'localhost',
@@ -18,8 +18,26 @@ define mysql::query (
     require => Service['mysql'],
   }
 
+
+  $arg_mysql_user = $mysql_user ? {
+    ''      => '',
+    default => "-u ${mysql_user}",
+  }
+
+  $arg_mysql_host = $mysql_host ? {
+  ''      => '',
+  default => "-h ${mysql_host}",
+  }
+
+  $arg_mysql_password = $mysql_password ? {
+    ''      => '',
+    default => "--password=\"${mysql_password}\"",
+  }
+
   exec { "mysqlquery-${name}":
-      command     => "mysql < ${mysql_query_filepath}/mysqlquery-${name}.sql",
+      command     => "mysql --defaults-file=/root/.my.cnf \
+                      ${arg_mysql_user} ${arg_mysql_password} ${arg_mysql_host} \
+                      < ${mysql_query_filepath}/mysqlquery-${name}.sql",
       require     => File["mysqlquery-${name}.sql"],
       refreshonly => true,
       subscribe   => File["mysqlquery-${name}.sql"],
