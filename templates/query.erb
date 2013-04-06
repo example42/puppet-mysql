@@ -1,7 +1,7 @@
 # File managed by Puppet
 
-<% if @mysql_db %>
-    USE <%= mysql_db %>;
-<% end %>
-
+<% if @mysql_db -%>
+USE <%= mysql_db -%> ;
+<% end -%>
 <%= mysql_query %> ;
+
