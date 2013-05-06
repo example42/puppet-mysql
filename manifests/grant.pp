@@ -11,11 +11,11 @@ define mysql::grant (
 
   if (!defined(File[$mysql_grant_filepath])) {
     file { $mysql_grant_filepath:
-      path   => $mysql_grant_filepath,
       ensure => directory,
+      path   => $mysql_grant_filepath,
       owner  => root,
       group  => root,
-      mode   => 0700,
+      mode   => '0700',
     }
   }
 
@@ -27,18 +27,20 @@ define mysql::grant (
 
   file { $mysql_grant_file:
     ensure   => present,
-    mode     => 0600,
+    mode     => '0600',
     owner    => root,
     group    => root,
     path     => "${mysql_grant_filepath}/${mysql_grant_file}",
     content  => template('mysql/grant.erb'),
   }
 
+  $exec_command = $mysql::real_root_password ? {
+    ''      => "mysql -uroot < ${mysql_grant_filepath}/${mysql_grant_file}",
+    default => "mysql --defaults-file=/root/.my.cnf -uroot < ${mysql_grant_filepath}/${mysql_grant_file}",
+  }
+
   exec { "mysqlgrant-${mysql_user}-${mysql_host}-${mysql_db}":
-    command     => $mysql::real_root_password ? {
-      ''      => "mysql -uroot < ${mysql_grant_filepath}/${mysql_grant_file}",
-      default => "mysql --defaults-file=/root/.my.cnf -uroot < ${mysql_grant_filepath}/${mysql_grant_file}",
-    },
+    command     => $mysql::exec_command,
     require     => Service['mysql'],
     subscribe   => File[$mysql_grant_file],
     path        => [ '/usr/bin' , '/usr/sbin' ],

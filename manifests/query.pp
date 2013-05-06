@@ -9,9 +9,9 @@ define mysql::query (
 
   file { "mysqlquery-${name}.sql":
     ensure  => present,
-    mode    => 0600,
-    owner   => root,
-    group   => root,
+    mode    => '0600',
+    owner   => 'root',
+    group   => 'root',
     path    => "${mysql_query_filepath}/mysqlquery-${name}.sql",
     content => template('mysql/query.erb'),
     notify  => Exec["mysqlquery-${name}"],

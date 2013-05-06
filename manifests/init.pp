@@ -316,7 +316,9 @@ class mysql (
     default => 'present',
   }
 
-  if $mysql::bool_absent == true or $mysql::bool_disable == true or $mysql::bool_disableboot == true {
+  if  $mysql::bool_absent == true or
+      $mysql::bool_disable == true or
+      $mysql::bool_disableboot == true {
     $manage_monitor = false
   } else {
     $manage_monitor = true
