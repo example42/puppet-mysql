@@ -57,6 +57,12 @@
 #   configuration files. Default: true, Set to false if you don't want to
 #   automatically restart the service.
 #
+# [*version*]
+#   The package version, used in the ensure parameter of package type.
+#   Default: present. Can be 'latest' or a specific version number.
+#   Note that if the argument absent (see below) is set to true, the
+#   package is removed, whatever the value of version parameter.
+#
 # [*absent*]
 #   Set to 'true' to remove package(s) installed by module
 #   Can be defined also by the (top scope) variable $mysql_absent
@@ -220,6 +226,7 @@ class mysql (
   $template            = params_lookup( 'template' ),
   $service_autorestart = params_lookup( 'service_autorestart' , 'global' ),
   $options             = params_lookup( 'options' ),
+  $version             = params_lookup( 'version' ),
   $absent              = params_lookup( 'absent' ),
   $disable             = params_lookup( 'disable' ),
   $disableboot         = params_lookup( 'disableboot' ),
@@ -280,7 +287,7 @@ class mysql (
   ### Definition of some variables used in the module
   $manage_package = $mysql::bool_absent ? {
     true  => 'absent',
-    false => 'present',
+    false => $mysql::version,
   }
 
   $manage_service_enable = $mysql::bool_disableboot ? {
@@ -309,7 +316,9 @@ class mysql (
     default => 'present',
   }
 
-  if $mysql::bool_absent == true or $mysql::bool_disable == true or $mysql::bool_disableboot == true {
+  if  $mysql::bool_absent == true or
+      $mysql::bool_disable == true or
+      $mysql::bool_disableboot == true {
     $manage_monitor = false
   } else {
     $manage_monitor = true

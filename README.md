@@ -57,6 +57,12 @@ For detailed info about the logic and usage patterns of Example42 modules read R
           disableboot => true
         }
 
+* Install a specific version of mysqlpackage
+
+        class { 'mysql':
+          version => '1.0.1',
+        }
+
 * Remove mysql package
 
         class { "mysql":
