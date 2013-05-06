@@ -102,6 +102,7 @@ class mysql::params {
   $source_dir = ''
   $source_dir_purge = false
   $template = ''
+  $version = 'present'
   $options = ''
   $service_autorestart = true
   $absent = false
