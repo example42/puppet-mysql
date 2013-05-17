@@ -40,7 +40,7 @@ define mysql::grant (
   }
 
   exec { "mysqlgrant-${mysql_user}-${mysql_host}-${mysql_db}":
-    command     => $mysql::exec_command,
+    command     => $exec_command,
     require     => Service['mysql'],
     subscribe   => File[$mysql_grant_file],
     path        => [ '/usr/bin' , '/usr/sbin' ],
