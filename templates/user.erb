@@ -1,12 +1,12 @@
 # File managed by Puppet
 
 GRANT USAGE ON *.*
-    TO '<%= mysql_user %>'@'<%= mysql_host %>'
+    TO '<%= @mysql_user %>'@'<%= @mysql_host %>'
     IDENTIFIED BY
-    <% if has_variable?('mysql_password_hash') && mysql_password_hash then %>
-        PASSWORD '<%= mysql_password_hash %>'
+    <% if has_variable?('mysql_password_hash') && @mysql_password_hash then %>
+        PASSWORD '<%= @mysql_password_hash %>'
     <% else %>
-        '<%= mysql_password %>';
+        '<%= @mysql_password %>';
     <% end %>
 ;
 FLUSH PRIVILEGES;
