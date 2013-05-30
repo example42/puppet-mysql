@@ -4,29 +4,31 @@
 # grant statement and then applies it.
 #
 # Supported arguments:
-# $mysql_db             - The database to apply the grant to. 
-#                         If not set, defaults to == $title
-#                         It supports SQL wildcards (%), ie: 'somedatab%'.
-#                         The special value '*' means 'ALL DATABASES'
-# $mysql_user           - User to grant the permissions to.
-# $mysql_password       - Plaintext password for the user.
-# $mysql_create_db      - If you want a $mysql_db database created or not.
-#                         Default: true.
-# $mysql_privileges     - Privileges to grant to the user.
-#                         Defaults to 'ALL'
-# $mysql_host           - Host where the user can connect from. Accepts SQL wildcards.
-#                         Default: 'localhost'
-# $mysql_grant_filepath - Path where the grant files will be stored.
-#                         Default: '/root/puppet-mysql'
+# $mysql_db                - The database to apply the grant to. 
+#                            If not set, defaults to == $title
+#                            It supports SQL wildcards (%), ie: 'somedatab%'.
+#                            The special value '*' means 'ALL DATABASES'
+# $mysql_db_create_options - Special create options e.g. 'character set utf8'. 
+# $mysql_user              - User to grant the permissions to.
+# $mysql_password          - Plaintext password for the user.
+# $mysql_create_db         - If you want a $mysql_db database created or not.
+#                            Default: true.
+# $mysql_privileges        - Privileges to grant to the user.
+#                            Defaults to 'ALL'
+# $mysql_host              - Host where the user can connect from. Accepts SQL wildcards.
+#                            Default: 'localhost'
+# $mysql_grant_filepath    - Path where the grant files will be stored.
+#                            Default: '/root/puppet-mysql'
 
 define mysql::grant (
-  $mysql_db = '',
+  $mysql_db                 = '',
+  $mysql_db_create_options  = '',
   $mysql_user,
   $mysql_password,
-  $mysql_create_db      = true,
-  $mysql_privileges     = 'ALL',
-  $mysql_host           = 'localhost',
-  $mysql_grant_filepath = '/root/puppet-mysql'
+  $mysql_create_db          = true,
+  $mysql_privileges         = 'ALL',
+  $mysql_host               = 'localhost',
+  $mysql_grant_filepath     = '/root/puppet-mysql'
   ) {
 
   require mysql
@@ -34,7 +36,12 @@ define mysql::grant (
   $dbname = $mysql_db ? {
    ''      => $name,
    default => $mysql_db,
-  } 
+  }
+  
+  $real_db_create_options = $mysql_db_create_options ? {
+    ''      => '',
+    default => " $mysql_db_create_options",
+  }
 
   # Check for wildcards
   $real_db = $dbname ? {
