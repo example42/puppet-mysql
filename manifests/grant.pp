@@ -20,13 +20,14 @@
 #                         Default: '/root/puppet-mysql'
 
 define mysql::grant (
-  $mysql_db = '',
+  $mysql_db                 = '',
+  $mysql_db_create_options  = '',
   $mysql_user,
   $mysql_password,
-  $mysql_create_db      = true,
-  $mysql_privileges     = 'ALL',
-  $mysql_host           = 'localhost',
-  $mysql_grant_filepath = '/root/puppet-mysql'
+  $mysql_create_db          = true,
+  $mysql_privileges         = 'ALL',
+  $mysql_host               = 'localhost',
+  $mysql_grant_filepath     = '/root/puppet-mysql'
   ) {
 
   require mysql
@@ -34,7 +35,9 @@ define mysql::grant (
   $dbname = $mysql_db ? {
    ''      => $name,
    default => $mysql_db,
-  } 
+  }
+  
+  $real_db_create_options = $mysql_db_create_options
 
   # Check for wildcards
   $real_db = $dbname ? {
