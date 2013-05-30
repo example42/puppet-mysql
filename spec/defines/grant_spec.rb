@@ -76,4 +76,18 @@ GRANT ALL ON `sample6_db%`.* TO 'someuser'@'localhost' IDENTIFIED BY 'somepasswo
 FLUSH PRIVILEGES ;
 ") }
   end
+  
+  describe 'Test grant on a single db with create options' do
+    let(:params) { { :name    => 'sample7',
+                     :mysql_db => 'sample7_db',
+                     :mysql_db_create_options => 'character set utf8',
+                     :mysql_user => 'someuser',
+                     :mysql_password => 'somepassword', } }
+    it { should contain_file('mysqlgrant-someuser-localhost-sample7_db.sql').with_content(
+"# This file is managed by Puppet. DO NOT EDIT.
+CREATE DATABASE IF NOT EXISTS `sample7_db` character set utf8;
+GRANT ALL ON `sample7_db`.* TO 'someuser'@'localhost' IDENTIFIED BY 'somepassword';
+FLUSH PRIVILEGES ;
+") }
+  end
 end

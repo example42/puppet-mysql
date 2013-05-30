@@ -38,7 +38,10 @@ define mysql::grant (
    default => $mysql_db,
   }
   
-  $real_db_create_options = $mysql_db_create_options
+  $real_db_create_options = $mysql_db_create_options ? {
+    ''      => '',
+    default => " $mysql_db_create_options",
+  }
 
   # Check for wildcards
   $real_db = $dbname ? {
