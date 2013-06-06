@@ -4,7 +4,7 @@
 # grant statement and then applies it.
 #
 # Supported arguments:
-# $mysql_db             - The database to apply the grant to. 
+# $mysql_db             - The database to apply the grant to.
 #                         If not set, defaults to == $title
 #                         It supports SQL wildcards (%), ie: 'somedatab%'.
 #                         The special value '*' means 'ALL DATABASES'
@@ -34,7 +34,7 @@ define mysql::grant (
   $dbname = $mysql_db ? {
    ''      => $name,
    default => $mysql_db,
-  } 
+  }
 
   # Check for wildcards
   $real_db = $dbname ? {
@@ -77,9 +77,15 @@ define mysql::grant (
     default => "mysql --defaults-file=/root/.my.cnf -uroot < ${mysql_grant_filepath}/${mysql_grant_file}",
   }
 
+  $exec_require = $mysql::real_root_password ? {
+    ''      => Service['mysql'],
+    default => [ Service['mysql'], File['/root/.my.cnf'] ],
+  }
+
+
   exec { "mysqlgrant-${mysql_user}-${mysql_host}-${mysql_db}":
     command     => $exec_command,
-    require     => Service['mysql'],
+    require     => $exec_require,
     subscribe   => File[$mysql_grant_file],
     path        => [ '/usr/bin' , '/usr/sbin' ],
     refreshonly => true;
