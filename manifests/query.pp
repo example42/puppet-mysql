@@ -1,9 +1,9 @@
 define mysql::query (
   $mysql_query,
   $mysql_db             = undef,
-  $mysql_user           = 'root',
+  $mysql_user           = '',
   $mysql_password       = '',
-  $mysql_host           = 'localhost',
+  $mysql_host           = '',
   $mysql_query_filepath = '/root/puppet-mysql'
   ) {
 
@@ -34,11 +34,21 @@ define mysql::query (
     default => "--password=\"${mysql_password}\"",
   }
 
+  $arg_mysql_defaults_file = $mysql::real_root_password ? {
+    ''      => '',
+    default => '--defaults-file=/root/.my.cnf',
+  }
+
+  $exec_require = $mysql::real_root_password ? {
+    ''      => [ Service['mysql'], File["mysqlquery-${name}.sql"] ],
+    default => [ Service['mysql'], File["mysqlquery-${name}.sql"] , File['/root/.my.cnf'] ],
+  }
+
   exec { "mysqlquery-${name}":
-    command     => "mysql --defaults-file=/root/.my.cnf \
+    command     => "mysql ${arg_mysql_defaults_file} \
                     ${arg_mysql_user} ${arg_mysql_password} ${arg_mysql_host} \
                     < ${mysql_query_filepath}/mysqlquery-${name}.sql",
-    require     => File["mysqlquery-${name}.sql"],
+    require     => $exec_require,
     refreshonly => true,
     subscribe   => File["mysqlquery-${name}.sql"],
     path        => [ '/usr/bin' , '/usr/sbin' ],
