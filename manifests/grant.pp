@@ -18,15 +18,15 @@
 #                         Default: 'localhost'
 # $mysql_grant_filepath - Path where the grant files will be stored.
 #                         Default: '/root/puppet-mysql'
-
 define mysql::grant (
-  $mysql_db = '',
+  $mysql_db                 = '',
+  $mysql_db_create_options  = '',
   $mysql_user,
   $mysql_password,
-  $mysql_create_db      = true,
-  $mysql_privileges     = 'ALL',
-  $mysql_host           = 'localhost',
-  $mysql_grant_filepath = '/root/puppet-mysql'
+  $mysql_create_db          = true,
+  $mysql_privileges         = 'ALL',
+  $mysql_host               = 'localhost',
+  $mysql_grant_filepath     = '/root/puppet-mysql'
   ) {
 
   require mysql
@@ -35,22 +35,26 @@ define mysql::grant (
    ''      => $name,
    default => $mysql_db,
   }
+  $real_db_create_options = $mysql_db_create_options ? {
+    ''      => '',
+    default => " $mysql_db_create_options",
+  }
 
   # Check for wildcards
   $real_db = $dbname ? {
     /^(\*|%)$/ => '*',
-    default   => "`${dbname}`",
+    default    => "`${dbname}`",
   }
 
   $mysql_grant_file = $dbname ? {
     /^(\*|%)$/ => "mysqlgrant-${mysql_user}-${mysql_host}-all.sql",
-    default   => "mysqlgrant-${mysql_user}-${mysql_host}-${dbname}.sql",
+    default    => "mysqlgrant-${mysql_user}-${mysql_host}-${dbname}.sql",
   }
 
   # If dbname has a wildcard, we don't want to create anything
   $bool_mysql_create_db = $dbname ? {
     /(\*|%)/ => false,
-    default => any2bool($mysql_create_db)
+    default  => any2bool($mysql_create_db)
   }
 
   if (!defined(File[$mysql_grant_filepath])) {
@@ -83,7 +87,7 @@ define mysql::grant (
   }
 
 
-  exec { "mysqlgrant-${mysql_user}-${mysql_host}-${mysql_db}":
+  exec { "mysqlgrant-${mysql_user}-${mysql_host}-${dbname}":
     command     => $exec_command,
     require     => $exec_require,
     subscribe   => File[$mysql_grant_file],
