@@ -7,6 +7,12 @@ define mysql::query (
   $mysql_query_filepath = '/root/puppet-mysql'
   ) {
 
+  if ! defined(File[$mysql_query_filepath]) {
+    file { $mysql_query_filepath:
+      ensure => directory,
+    }
+  }
+
   file { "mysqlquery-${name}.sql":
     ensure  => present,
     mode    => '0600',
