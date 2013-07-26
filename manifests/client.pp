@@ -5,13 +5,16 @@
 # Usage:
 # include mysql::client
 #
-class mysql::client {
+class mysql::client (
+  $package         = $mysql::params::package_client,
+  $version         = 'present'
+) {
 
   include mysql::params
 
   package { 'mysql-client':
-    ensure => present,
-    name   => $mysql::params::package_client,
+    ensure => $version,
+    name   => $package,
   }
 
 }
