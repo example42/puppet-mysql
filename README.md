@@ -28,7 +28,7 @@ For detailed info about the logic and usage patterns of Example42 modules read R
           root_password => 'auto',          
         }
 
-* Create a new grant and database
+* Create a new grant and database. mysql_db_init_query_file is optional and will run only once.
 
         mysql::grant { 'db1':
           mysql_privileges => 'ALL',
@@ -36,6 +36,7 @@ For detailed info about the logic and usage patterns of Example42 modules read R
           mysql_db => 'db1',
           mysql_user => 'db1',
           mysql_host => 'host',
+          mysql_db_init_query_file => '/full/path/to/the/schema.sql',
         }
 
 
