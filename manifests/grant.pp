@@ -26,7 +26,8 @@ define mysql::grant (
   $mysql_create_db          = true,
   $mysql_privileges         = 'ALL',
   $mysql_host               = 'localhost',
-  $mysql_grant_filepath     = '/root/puppet-mysql'
+  $mysql_grant_filepath     = '/root/puppet-mysql',
+  $mysql_db_init_query_file = ''
   ) {
 
   require mysql
@@ -95,4 +96,13 @@ define mysql::grant (
     refreshonly => true;
   }
 
+  if $mysql_db_init_query_file != '' {
+    mysql::queryfile { "mysql_db_init_query_file-${mysql_host}-${dbname}":
+      mysql_file     => $mysql_db_init_query_file,
+      mysql_user     => $mysql_user,
+      mysql_password => $mysql_password,
+      mysql_db       => $mysql_db,
+      mysql_host     => $mysql_host,
+    }
+  }
 }
