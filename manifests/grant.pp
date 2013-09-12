@@ -87,7 +87,7 @@ define mysql::grant (
 
   $exec_require = $mysql::real_root_password ? {
     ''      => Service['mysql'],
-    default => [ Service['mysql'], File['/root/.my.cnf'] ],
+    default => [ Service['mysql'], Class['mysql::password'] ],
   }
 
 
