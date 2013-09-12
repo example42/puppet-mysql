@@ -47,7 +47,7 @@ define mysql::query (
 
   $exec_require = $mysql::real_root_password ? {
     ''      => [ Service['mysql'], File["mysqlquery-${name}.sql"] ],
-    default => [ Service['mysql'], File["mysqlquery-${name}.sql"] , File['/root/.my.cnf'] ],
+    default => [ Service['mysql'], File["mysqlquery-${name}.sql"] , Class['mysql::password'] ],
   }
 
   exec { "mysqlquery-${name}":
