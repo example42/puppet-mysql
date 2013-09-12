@@ -35,7 +35,7 @@ define mysql::queryfile (
 
   $exec_require = $mysql::real_root_password ? {
     ''      => [ Service['mysql'], File[$mysql_query_filepath] ],
-    default => [ Service['mysql'], File[$mysql_query_filepath] , File['/root/.my.cnf'] ],
+    default => [ Service['mysql'], File[$mysql_query_filepath] , Class['mysql::password'] ],
   }
 
   exec { "mysqlqueryfile-${name}":
