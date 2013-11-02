@@ -452,8 +452,8 @@ class mysql (
       ensure  => $mysql::manage_file,
       path    => "${settings::vardir}/debug-mysql",
       mode    => '0640',
-      owner   => 'root',
-      group   => 'root',
+      owner   => $mysql::config_file_owner,
+      group   => $mysql::config_file_group,
       content => inline_template('<%= scope.to_hash.reject { |k,v| k.to_s =~ /(uptime.*|path|timestamp|free|.*password.*|.*psk.*|.*key)/ }.to_yaml %>'),
     }
   }
