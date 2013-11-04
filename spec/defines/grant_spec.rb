@@ -96,4 +96,18 @@ GRANT ALL ON `sample7_db`.* TO 'someuser'@'localhost' IDENTIFIED BY 'somepasswor
 FLUSH PRIVILEGES ;
 ") }
   end
+
+  describe 'Test grant all privileges on all databases (*) in an IP subnet. Should not create the databases' do
+    let(:facts) { { :mysql_root_password => 'rootpassword' } }
+    let(:params) { { :name    => 'sample1',
+                     :mysql_db => '*',
+                     :mysql_host => '10.42.42.0/255.255.255.0',
+                     :mysql_user => 'someuser',
+                     :mysql_password => 'somepassword', } }
+    it { should contain_file('mysqlgrant-someuser-10.42.42.0_255.255.255.0-all.sql').with_content("# This file is managed by Puppet. DO NOT EDIT.
+GRANT ALL ON *.* TO 'someuser'@'10.42.42.0/255.255.255.0' IDENTIFIED BY 'somepassword';
+FLUSH PRIVILEGES ;
+") }
+    it { should contain_exec('mysqlgrant-someuser-10.42.42.0_255.255.255.0-*').with_command('mysql --defaults-file=/root/.my.cnf -uroot < /root/puppet-mysql/mysqlgrant-someuser-10.42.42.0_255.255.255.0-all.sql') }
+  end
 end
