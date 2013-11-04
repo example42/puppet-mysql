@@ -18,7 +18,8 @@ define mysql::user (
     }
   }
 
-  $mysql_grant_file = "mysqluser-${mysql_user}-${mysql_host}.sql"
+  $nice_mysql_host = regsubst($mysql_host, '/', '_')
+  $mysql_grant_file = "mysqluser-${mysql_user}-${nice_mysql_host}.sql"
 
   file { $mysql_grant_file:
       ensure  => present,
@@ -29,7 +30,7 @@ define mysql::user (
       content => template('mysql/user.erb'),
   }
 
-  exec { "mysqluser-${mysql_user}-${mysql_host}":
+  exec { "mysqluser-${mysql_user}-${nice_mysql_host}":
       command     => "mysql --defaults-file=/root/.my.cnf -uroot < ${mysql_grant_filepath}/${mysql_grant_file}",
       require     => [ Service['mysql'], File['/root/.my.cnf'] ],
       subscribe   => File[$mysql_grant_file],
