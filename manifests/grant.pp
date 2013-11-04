@@ -50,9 +50,11 @@ define mysql::grant (
     default    => "`${dbname}`",
   }
 
+  $nice_mysql_host = regsubst($mysql_host, '/', '_')
+
   $mysql_grant_file = $dbname ? {
-    /^(\*|%)$/ => "mysqlgrant-${mysql_user}-${mysql_host}-all.sql",
-    default    => "mysqlgrant-${mysql_user}-${mysql_host}-${dbname}.sql",
+    /^(\*|%)$/ => "mysqlgrant-${mysql_user}-${nice_mysql_host}-all.sql",
+    default    => "mysqlgrant-${mysql_user}-${nice_mysql_host}-${dbname}.sql",
   }
 
   # If dbname has a wildcard, we don't want to create anything

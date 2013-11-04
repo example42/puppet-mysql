@@ -18,7 +18,8 @@ define mysql::user (
     }
   }
 
-  $mysql_grant_file = "mysqluser-${mysql_user}-${mysql_host}.sql"
+  $nice_mysql_host = regsubst($mysql_host, '/', '_')
+  $mysql_grant_file = "mysqluser-${mysql_user}-${nice_mysql_host}.sql"
 
   file { $mysql_grant_file:
       ensure  => present,
