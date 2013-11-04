@@ -93,7 +93,7 @@ define mysql::grant (
   }
 
 
-  exec { "mysqlgrant-${mysql_user}-${mysql_host}-${dbname}":
+  exec { "mysqlgrant-${mysql_user}-${nice_mysql_host}-${dbname}":
     command     => $exec_command,
     require     => $exec_require,
     subscribe   => File[$mysql_grant_file],
@@ -102,13 +102,13 @@ define mysql::grant (
   }
 
   if $mysql_db_init_query_file != '' and $mysql_create_db == true {
-    mysql::queryfile { "mysql_db_init_query_file-${mysql_host}-${dbname}":
+    mysql::queryfile { "mysql_db_init_query_file-${nice_mysql_host}-${dbname}":
       mysql_file     => $mysql_db_init_query_file,
       mysql_user     => $mysql_user,
       mysql_password => $mysql_password,
       mysql_db       => $mysql_db,
       mysql_host     => $mysql_host,
-      subscribe      => Exec["mysqlgrant-${mysql_user}-${mysql_host}-${dbname}"],
+      subscribe      => Exec["mysqlgrant-${mysql_user}-${nice_mysql_host}-${dbname}"],
     }
   }
 }
