@@ -18,6 +18,11 @@ class mysql::params {
   $root_password = ''
   $password_salt = ''
 
+  $install_mariadb = false
+  $mariadb_package = $::operatingsystem ? {
+    default => 'mariadb-server',
+  }
+
   ### Application related parameters
 
   $package = $::operatingsystem ? {
