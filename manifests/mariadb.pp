@@ -7,8 +7,11 @@
 #   Whether or not to configure the firewall for the repo and key server
 #
 class mysql::mariadb (
-  $version  = $::mysql::version,
-  $firewall = $::mysql::bool_firewall
+  $version        = $::mysql::version,
+  $firewall       = $::mysql::bool_firewall,
+  $apt_mirror_url = 'http://mirrors.supportex.net',
+  $apt_key        = '1024D/1BB943DB',
+  $apt_keyserver  = 'keyserver.ubuntu.com',
 ) {
 
   case $::operatingsystem {
@@ -21,14 +24,14 @@ class mysql::mariadb (
       }
 
       $distro_lc     = inline_template("<%= scope.lookupvar('::operatingsystem').downcase %>")
-      $distro_url    = "http://mirrors.supportex.net/mariadb/repo/${minor_version}/${distro_lc}"
+      $distro_url    = "${apt_mirror_url}/mariadb/repo/${minor_version}/${distro_lc}"
 
       apt::repository { 'mariadb':
         url        => $distro_url,
         distro     => $::lsbdistcodename,
         repository => 'main',
-        key        => '1024D/1BB943DB',
-        keyserver  => 'keyserver.ubuntu.com',
+        key        => $apt_key,
+        keyserver  => $apt_keyserver,
         before     => Package['mysql']
       }
 
