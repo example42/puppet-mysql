@@ -10,7 +10,7 @@ class mysql::mariadb (
   $version        = $::mysql::version,
   $firewall       = $::mysql::bool_firewall,
   $apt_mirror_url = 'http://mirrors.supportex.net',
-  $apt_key        = '1024D/1BB943DB',
+  $apt_key        = '1BB943DB',
   $apt_keyserver  = 'keyserver.ubuntu.com',
 ) {
 
@@ -43,6 +43,9 @@ class mysql::mariadb (
           port           => 80,
           direction      => 'output',
         }
+
+        Service['iptables'] -> Apt::Key[$apt_key]
+        Service['iptables'] -> Apt::Repository['mariadb']
       }
 
     }
