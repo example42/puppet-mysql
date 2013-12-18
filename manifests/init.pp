@@ -203,6 +203,12 @@
 #   This is used by monitor, firewall and puppi (optional) components
 #   Can be defined also by the (top scope) variable $mysql_protocol
 #
+# [*install_mariadb*]
+#   Bool (default false). Not all distro's ship mariadb by default yet.
+#   Setting this directive to true forces the installation of mariadb.
+#
+# [*mariadb_package*]
+#   If mariadb is to be installed what package name to use.
 #
 # == Examples
 #
@@ -258,7 +264,9 @@ class mysql (
   $log_dir             = params_lookup( 'log_dir' ),
   $log_file            = params_lookup( 'log_file' ),
   $port                = params_lookup( 'port' ),
-  $protocol            = params_lookup( 'protocol' )
+  $protocol            = params_lookup( 'protocol' ),
+  $install_mariadb     = params_lookup( 'install_mariadb' ),
+  $mariadb_package     = params_lookup( 'mariadb_package' ),
   ) inherits mysql::params {
 
   $bool_source_dir_purge=any2bool($source_dir_purge)
@@ -270,6 +278,7 @@ class mysql (
   $bool_puppi=any2bool($puppi)
   $bool_firewall=any2bool($firewall)
   $bool_debug=any2bool($debug)
+  $bool_install_mariadb=any2bool($install_mariadb)
   $bool_audit_only=any2bool($audit_only)
 
   ### Root password setup
@@ -354,9 +363,20 @@ class mysql (
   if $mysql::real_root_password != '' { include mysql::password }
 
   ### Managed resources
-  package { 'mysql':
-    ensure => $mysql::manage_package,
-    name   => $mysql::package,
+  if $bool_install_mariadb {
+
+    include ::mysql::mariadb
+
+    package { 'mysql':
+      ensure => $mysql::manage_package,
+      name   => $mysql::mariadb_package,
+    }
+
+  } else {
+    package { 'mysql':
+      ensure => $mysql::manage_package,
+      name   => $mysql::package,
+    }
   }
 
   if $mysql::bool_absent == false {
