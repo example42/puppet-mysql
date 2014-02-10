@@ -1,3 +1,5 @@
+# Define mysql::query
+#
 define mysql::query (
   $mysql_query,
   $mysql_db             = undef,
@@ -16,8 +18,8 @@ define mysql::query (
   file { "mysqlquery-${name}.sql":
     ensure  => present,
     mode    => '0600',
-    owner    => $mysql::config_file_owner,
-    group    => $mysql::config_file_group,
+    owner   => $mysql::config_file_owner,
+    group   => $mysql::config_file_group,
     path    => "${mysql_query_filepath}/mysqlquery-${name}.sql",
     content => template('mysql/query.erb'),
     notify  => Exec["mysqlquery-${name}"],

@@ -1,3 +1,5 @@
+# Define mysql::queryfile
+#
 define mysql::queryfile (
   $mysql_file,
   $mysql_db             = undef,

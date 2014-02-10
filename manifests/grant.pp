@@ -67,8 +67,8 @@ define mysql::grant (
     file { $mysql_grant_filepath:
       ensure => directory,
       path   => $mysql_grant_filepath,
-      owner    => $mysql::config_file_owner,
-      group    => $mysql::config_file_group,
+      owner  => $mysql::config_file_owner,
+      group  => $mysql::config_file_group,
       mode   => '0700',
     }
   }
