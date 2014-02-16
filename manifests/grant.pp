@@ -21,6 +21,14 @@
 # $mysql_db_init_query_file - Location of a sql file typically used to create the schema.
 #                             $mysql_create_db must be true or the database must exist.
 #                             Default: ''
+# $remote_host              - Host on which to run the command. If not specified, the
+#                             command will be run on localhost.
+#                             Default: ''
+# $remote_user              - User to connect with when running the command on a remote
+#                             server.
+#                             Default: ''
+# $remote_password          - Password to use when running the command on a remote server.
+#                             Default: ''
 define mysql::grant (
   $mysql_user,
   $mysql_password,
@@ -30,7 +38,10 @@ define mysql::grant (
   $mysql_privileges         = 'ALL',
   $mysql_host               = 'localhost',
   $mysql_grant_filepath     = '/root/puppet-mysql',
-  $mysql_db_init_query_file = ''
+  $mysql_db_init_query_file = '',
+  $remote_host              = '',
+  $remote_user              = '',
+  $remote_password          = ''
   ) {
 
   require mysql
@@ -82,14 +93,20 @@ define mysql::grant (
     content  => template('mysql/grant.erb'),
   }
 
-  $exec_command = $mysql::real_root_password ? {
-    ''      => "mysql -uroot < ${mysql_grant_filepath}/${mysql_grant_file}",
-    default => "mysql --defaults-file=/root/.my.cnf -uroot < ${mysql_grant_filepath}/${mysql_grant_file}",
+  $exec_command = $remote_host ? {
+    ''      => $mysql::real_root_password ? {
+      ''      => "mysql -uroot < ${mysql_grant_filepath}/${mysql_grant_file}",
+      default => "mysql --defaults-file=/root/.my.cnf -uroot < ${mysql_grant_filepath}/${mysql_grant_file}",
+    },
+    default => "mysql -h${remote_host} -u${remote_user} --password=${remote_password} ${mysql_grant_filepath}/${mysql_grant_file}",
   }
 
-  $exec_require = $mysql::real_root_password ? {
-    ''      => Service['mysql'],
-    default => [ Service['mysql'], Class['mysql::password'] ],
+  $exec_require = $remote_host ? {
+    ''      => $mysql::real_root_password ? {
+      ''      => Service['mysql'],
+      default => [ Service['mysql'], Class['mysql::password'] ],
+    },
+    default => undef,
   }
 
 
