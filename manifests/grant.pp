@@ -103,7 +103,7 @@ define mysql::grant (
       ''      => "mysql -uroot < ${mysql_grant_filepath}/${mysql_grant_file}",
       default => "mysql --defaults-file=/root/.my.cnf -uroot < ${mysql_grant_filepath}/${mysql_grant_file}",
     },
-    default => "mysql -h${remote_host} -u${remote_user} --password=${remote_password} ${mysql_grant_filepath}/${mysql_grant_file}",
+    default => "mysql -h${remote_host} -u${remote_user} --password=${remote_password} < ${mysql_grant_filepath}/${mysql_grant_file}",
   }
 
   $exec_require = $remote_host ? {
