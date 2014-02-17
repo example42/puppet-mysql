@@ -63,9 +63,14 @@ define mysql::grant (
 
   $nice_mysql_host = regsubst($mysql_host, '/', '_')
 
+  $grant_file_host = $remote_host ? {
+    ''      => '',
+    default => "-${remote_host}",
+  }
+
   $mysql_grant_file = $dbname ? {
-    /^(\*|%)$/ => "mysqlgrant-${mysql_user}-${nice_mysql_host}-all.sql",
-    default    => "mysqlgrant-${mysql_user}-${nice_mysql_host}-${dbname}.sql",
+    /^(\*|%)$/ => "mysqlgrant${grant_file_host}-${mysql_user}-${nice_mysql_host}-all.sql",
+    default    => "mysqlgrant${grant_file_host}-${mysql_user}-${nice_mysql_host}-${dbname}.sql",
   }
 
   # If dbname has a wildcard, we don't want to create anything
