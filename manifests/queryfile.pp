@@ -6,7 +6,8 @@ define mysql::queryfile (
   $mysql_user           = '',
   $mysql_password       = '',
   $mysql_host           = '',
-  $mysql_query_filepath = '/root/puppet-mysql'
+  $mysql_query_filepath = '/root/puppet-mysql',
+  $remote_host = '',
   ) {
 
   if ! defined(File[$mysql_query_filepath]) {
@@ -20,9 +21,9 @@ define mysql::queryfile (
     default => "-u ${mysql_user}",
   }
 
-  $arg_mysql_host = $mysql_host ? {
+  $arg_mysql_host = $remote_host ? {
   ''      => '',
-  default => "-h ${mysql_host}",
+  default => "-h ${remote_host}",
   }
 
   $arg_mysql_password = $mysql_password ? {

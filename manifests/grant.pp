@@ -130,6 +130,7 @@ define mysql::grant (
       mysql_password => $mysql_password,
       mysql_db       => $mysql_db,
       mysql_host     => $mysql_host,
+      remote_host    => $remote_host,
       subscribe      => Exec["mysqlgrant-${mysql_user}-${nice_mysql_host}-${dbname}"],
     }
   }
