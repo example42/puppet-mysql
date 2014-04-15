@@ -2,5 +2,5 @@
 <% if @bool_mysql_create_db -%>
 CREATE DATABASE IF NOT EXISTS <%= @real_db %><%= @real_db_create_options %>;
 <% end -%>
-GRANT <%= @mysql_privileges %> ON <%= @real_db %>.* TO '<%= @mysql_user %>'@'<%= @mysql_host %>' IDENTIFIED BY '<%= @mysql_password %>'<% if @require_ssl  -%>require ssl<% end -%>;
+GRANT <%= @mysql_privileges %> ON <%= @real_db %>.* TO '<%= @mysql_user %>'@'<%= @mysql_host %>' IDENTIFIED BY '<%= @mysql_password %>'<% if @require_ssl  -%> require ssl<% end -%>;
 FLUSH PRIVILEGES ;
