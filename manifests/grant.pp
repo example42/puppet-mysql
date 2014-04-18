@@ -29,6 +29,8 @@
 #                             Default: ''
 # $remote_password          - Password to use when running the command on a remote server.
 #                             Default: ''
+# $require_ssl              - Define if SSL connection is required for the user.
+#                             Default: false
 define mysql::grant (
   $mysql_user,
   $mysql_password,
@@ -41,7 +43,8 @@ define mysql::grant (
   $mysql_db_init_query_file = '',
   $remote_host              = '',
   $remote_user              = '',
-  $remote_password          = ''
+  $remote_password          = '',
+  $require_ssl              = false,
   ) {
 
   require mysql
