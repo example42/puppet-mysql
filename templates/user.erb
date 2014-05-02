@@ -3,7 +3,7 @@
 GRANT USAGE ON *.*
     TO '<%= @mysql_user %>'@'<%= @mysql_host %>'
     IDENTIFIED BY
-    <% if has_variable?('mysql_password_hash') && @mysql_password_hash then %>
+    <% if has_variable?('mysql_password_hash') && @mysql_password_hash != '' then %>
         PASSWORD '<%= @mysql_password_hash %>'
     <% else %>
         '<%= @mysql_password %>';
