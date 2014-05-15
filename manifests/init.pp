@@ -60,7 +60,7 @@
 # [*service_manage*]
 #   When you make HA with corosync/pacemaker for exemple, the mysql service
 #   status should be managed by corosync/pacemaker. Set this parameter to true
-#   allow you to tell puppet to not change mysql service status.
+#   allow you to tell puppet to not change mysql service status
 #
 # [*version*]
 #   The package version, used in the ensure parameter of package type.
