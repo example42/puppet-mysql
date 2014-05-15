@@ -57,6 +57,11 @@
 #   configuration files. Default: true, Set to false if you don't want to
 #   automatically restart the service.
 #
+# [*service_manage*]
+#   When you make HA with corosync/pacemaker for exemple, the mysql service
+#   status should be managed by corosync/pacemaker. Set this parameter to true
+#   allow you to tell puppet to not change mysql service status
+#
 # [*version*]
 #   The package version, used in the ensure parameter of package type.
 #   Default: present. Can be 'latest' or a specific version number.
@@ -225,6 +230,7 @@ class mysql (
   $source_dir_purge    = params_lookup( 'source_dir_purge' ),
   $template            = params_lookup( 'template' ),
   $service_autorestart = params_lookup( 'service_autorestart' , 'global' ),
+  $service_manage      = params_lookup( 'service_manage' ),
   $options             = params_lookup( 'options' ),
   $version             = params_lookup( 'version' ),
   $absent              = params_lookup( 'absent' ),
@@ -263,6 +269,7 @@ class mysql (
 
   $bool_source_dir_purge=any2bool($source_dir_purge)
   $bool_service_autorestart=any2bool($service_autorestart)
+  $bool_service_manage=any2bool($service_manage)
   $bool_absent=any2bool($absent)
   $bool_disable=any2bool($disable)
   $bool_disableboot=any2bool($disableboot)
@@ -298,9 +305,12 @@ class mysql (
     },
   }
 
-  $manage_service_ensure = $mysql::bool_disable ? {
-    true  => 'stopped',
-    false => 'running',
+  $manage_service_ensure = $mysql::bool_service_manage ? {
+    true => $mysql::bool_disable ? {
+      true  => 'stopped',
+      false => 'running',
+    },
+    false => undef,
   }
 
   $manage_service_autorestart = $mysql::bool_service_autorestart ? {

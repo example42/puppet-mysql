@@ -144,5 +144,11 @@ describe 'mysql' do
     it { should contain_monitor__process('mysql_process').with_enable('true') }
   end
 
+  describe 'Test do not manage service status' do
+    let(:params) { { :service_manage => false } }
+
+    it { should contain_service('mysql').with_ensure(nil) }
+  end
+
 end
 

@@ -108,6 +108,7 @@ class mysql::params {
   $version = 'present'
   $options = ''
   $service_autorestart = true
+  $service_manage = true
   $absent = false
   $disable = false
   $disableboot = false
