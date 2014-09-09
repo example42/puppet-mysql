@@ -8,9 +8,7 @@
 class mysql::client (
   $package         = $mysql::params::package_client,
   $version         = 'present'
-) {
-
-  include mysql::params
+) inherits mysql::params {
 
   package { 'mysql-client':
     ensure => $version,
