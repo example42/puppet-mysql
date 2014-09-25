@@ -35,7 +35,7 @@ class mysql::params {
       7            => 'mariadb',
       default      => 'mysql',
       },
-    default                   => 'mysql',
+    default        => 'mysql',
   }
 
   $service = $::operatingsystem ? {
@@ -45,7 +45,7 @@ class mysql::params {
       7            => 'mariadb',
       default      => 'mysqld',
       },
-    default                   => 'mysqld',
+    default        => 'mysqld',
   }
 
   $service_status = $::operatingsystem ? {
@@ -57,7 +57,7 @@ class mysql::params {
       7            => 'mariadb',
       default      => 'mysqld',
       } ",
-    default => 'mysqld',
+    default        => 'mysqld',
   }
 
   $process_args = $::operatingsystem ? {
@@ -113,7 +113,7 @@ class mysql::params {
       7            => '/var/log/mariadb/mariadb.log',
       default      => '/var/log/mysqld.log',
       },
-    default => '/var/log/mysqld.log',
+    default        => '/var/log/mysqld.log',
   }
 
   $port = '3306'
