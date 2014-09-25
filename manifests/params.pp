@@ -22,17 +22,29 @@ class mysql::params {
 
   $package = $::operatingsystem ? {
     /(?i:FreeBSD)/ => 'databases/mysql56-server',
+    RedHat         => $::operatingsystemmajrelease ? {
+      7            => 'mariadb-server',
+      default      => 'mysql-server',
+      },
     default        => 'mysql-server',
   }
 
   $package_client = $::operatingsystem ? {
     /(?i:Debian|Ubuntu|Mint)/ => 'mysql-client',
+    RedHat         =>  $::operatingsystemmajrelease ? {
+      7            => 'mariadb',
+      default      => 'mysql',
+      },
     default                   => 'mysql',
   }
 
   $service = $::operatingsystem ? {
     /(?i:Debian|Ubuntu|Mint)/ => 'mysql',
     /(?i:FreeBsd)/            => 'mysql-server',
+    RedHat         =>  $::operatingsystemmajrelease ? {
+      7            => 'mariadb',
+      default      => 'mysqld',
+      },
     default                   => 'mysqld',
   }
 
@@ -41,6 +53,10 @@ class mysql::params {
   }
 
   $process = $::operatingsystem ? {
+    RedHat         => "$out = $::operatingsystemmajrelease ? {
+      7            => 'mariadb',
+      default      => 'mysqld',
+      } ",
     default => 'mysqld',
   }
 
@@ -93,6 +109,10 @@ class mysql::params {
   }
 
   $log_file = $::operatingsystem ? {
+    RedHat         =>  $::operatingsystemmajrelease ? {
+      7            => '/var/log/mariadb/mariadb.log',
+      default      => '/var/log/mysqld.log',
+      },
     default => '/var/log/mysqld.log',
   }
 
