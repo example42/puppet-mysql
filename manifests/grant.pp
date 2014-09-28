@@ -47,7 +47,9 @@ define mysql::grant (
   $require_ssl              = false,
   ) {
 
-  require mysql
+  if $remote_host == '' {
+    require mysql
+  }
 
   $dbname = $mysql_db ? {
     ''      => $name,
@@ -86,8 +88,8 @@ define mysql::grant (
     file { $mysql_grant_filepath:
       ensure => directory,
       path   => $mysql_grant_filepath,
-      owner  => $mysql::config_file_owner,
-      group  => $mysql::config_file_group,
+      owner  => 'root',
+      group  => 'root',
       mode   => '0700',
     }
   }
@@ -95,8 +97,8 @@ define mysql::grant (
   file { $mysql_grant_file:
     ensure   => present,
     mode     => '0600',
-    owner    => $mysql::config_file_owner,
-    group    => $mysql::config_file_group,
+    owner  => 'root',
+    group  => 'root',
     path     => "${mysql_grant_filepath}/${mysql_grant_file}",
     content  => template('mysql/grant.erb'),
   }
