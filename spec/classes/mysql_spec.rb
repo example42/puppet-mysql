@@ -90,7 +90,7 @@ describe 'mysql' do
 
   describe 'Test service autorestart' do
     let(:params) { {:service_autorestart => "no" } }
-    it { should contain_file('mysql.conf').without_notify('Service[mysql]') }
+    it { should contain_file('mysql.conf').without_notify(nil) }
   end
 
   describe 'Test Puppi Integration' do
