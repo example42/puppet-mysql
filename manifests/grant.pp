@@ -34,6 +34,7 @@
 define mysql::grant (
   $mysql_user,
   $mysql_password,
+  $ensure                   = 'present',
   $mysql_db                 = '',
   $mysql_db_create_options  = '',
   $mysql_create_db          = true,
@@ -78,6 +79,11 @@ define mysql::grant (
     default    => "mysqlgrant${grant_file_host}-${mysql_user}-${nice_mysql_host}-${dbname}.sql",
   }
 
+  $mysql_grant_template = $ensure ? {
+    'absent' => 'mysql/revoke.erb',
+    default  => 'mysql/grant.erb',
+  }
+
   # If dbname has a wildcard, we don't want to create anything
   $bool_mysql_create_db = $dbname ? {
     /(\*|%)/ => false,
@@ -95,12 +101,12 @@ define mysql::grant (
   }
 
   file { $mysql_grant_file:
-    ensure   => present,
-    mode     => '0600',
-    owner  => 'root',
-    group  => 'root',
-    path     => "${mysql_grant_filepath}/${mysql_grant_file}",
-    content  => template('mysql/grant.erb'),
+    ensure  => present,
+    mode    => '0600',
+    owner   => 'root',
+    group   => 'root',
+    path    => "${mysql_grant_filepath}/${mysql_grant_file}",
+    content => template($mysql_grant_template),
   }
 
   $exec_command = $remote_host ? {

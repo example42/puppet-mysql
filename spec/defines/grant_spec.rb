@@ -82,7 +82,7 @@ GRANT ALL ON `sample6_db%`.* TO 'someuser'@'localhost' IDENTIFIED BY 'somepasswo
 FLUSH PRIVILEGES ;
 ") }
   end
-  
+
   describe 'Test grant on a single db with create options' do
     let(:params) { { :name    => 'sample7',
                      :mysql_db => 'sample7_db',
@@ -109,5 +109,22 @@ GRANT ALL ON *.* TO 'someuser'@'10.42.42.0/255.255.255.0' IDENTIFIED BY 'somepas
 FLUSH PRIVILEGES ;
 ") }
     it { should contain_exec('mysqlgrant-someuser-10.42.42.0_255.255.255.0-*').with_command('mysql --defaults-file=/root/.my.cnf -uroot < /root/puppet-mysql/mysqlgrant-someuser-10.42.42.0_255.255.255.0-all.sql') }
+  end
+
+  describe 'Test grant decomission (REVOKE)' do
+    let(:facts) { {
+      :mysql_root_password => 'rootpassword'
+    } }
+    let(:params) { {
+      :name           => 'sample1',
+      :ensure         => 'absent',
+      :mysql_db       => '*',
+      :mysql_host     => '10.42.42.0/255.255.255.0',
+      :mysql_user     => 'someuser',
+      :mysql_password => 'somepassword',
+    } }
+
+    it { should contain_file('mysqlgrant-someuser-10.42.42.0_255.255.255.0-all.sql').with_content(/REVOKE ALL ON \*\.\* FROM 'someuser'@'10.42.42.0\/255.255.255.0';/) }
+    it { should contain_file('mysqlgrant-someuser-10.42.42.0_255.255.255.0-all.sql').with_content(/FLUSH PRIVILEGES;/) }
   end
 end
