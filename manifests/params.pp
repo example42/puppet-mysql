@@ -24,6 +24,15 @@ class mysql::params {
     /(?i:FreeBSD)/ => 'databases/mysql56-server',
     default        => 'mysql-server',
   }
+  # Package name to remove
+  $package_server_remove = $::operatingsystem ? {
+    /(?i:Debian|Ubuntu|Mint)/ => 'mysql-server-core-5.5',
+    default                   => $package
+  }
+  $post_remove_commmand = $::operatingsystem ? {
+    /(?i:Debian|Ubuntu|Mint)/ => '/usr/bin/killall -9 mysqld_safe mysqld',
+    default                   => '/bin/true',
+  }
 
   $package_client = $::operatingsystem ? {
     /(?i:Debian|Ubuntu|Mint)/ => 'mysql-client',

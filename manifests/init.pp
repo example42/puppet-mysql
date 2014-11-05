@@ -17,6 +17,9 @@
 #   If you do not use this, the password can be reverse engineered very easily.
 #   Example: $password_salt = 'smeg'
 #
+# [*post_remove_commmand*]
+#   The post remove command.
+#
 # Standard class parameters
 # Define the general class behaviour and customizations
 #
@@ -222,49 +225,50 @@
 #   Alessandro Franceschi <al@lab42.it/>
 #
 class mysql (
-  $root_password       = params_lookup( 'root_password' ),
-  $password_salt       = params_lookup( 'password_salt' ),
-  $my_class            = params_lookup( 'my_class' ),
-  $source              = params_lookup( 'source' ),
-  $source_dir          = params_lookup( 'source_dir' ),
-  $source_dir_purge    = params_lookup( 'source_dir_purge' ),
-  $template            = params_lookup( 'template' ),
-  $service_autorestart = params_lookup( 'service_autorestart' , 'global' ),
-  $service_manage      = params_lookup( 'service_manage' ),
-  $options             = params_lookup( 'options' ),
-  $version             = params_lookup( 'version' ),
-  $absent              = params_lookup( 'absent' ),
-  $disable             = params_lookup( 'disable' ),
-  $disableboot         = params_lookup( 'disableboot' ),
-  $monitor             = params_lookup( 'monitor' , 'global' ),
-  $monitor_tool        = params_lookup( 'monitor_tool' , 'global' ),
-  $monitor_target      = params_lookup( 'monitor_target' , 'global' ),
-  $puppi               = params_lookup( 'puppi' , 'global' ),
-  $puppi_helper        = params_lookup( 'puppi_helper' , 'global' ),
-  $firewall            = params_lookup( 'firewall' , 'global' ),
-  $firewall_tool       = params_lookup( 'firewall_tool' , 'global' ),
-  $firewall_src        = params_lookup( 'firewall_src' , 'global' ),
-  $firewall_dst        = params_lookup( 'firewall_dst' , 'global' ),
-  $debug               = params_lookup( 'debug' , 'global' ),
-  $audit_only          = params_lookup( 'audit_only' , 'global' ),
-  $package             = params_lookup( 'package' ),
-  $service             = params_lookup( 'service' ),
-  $service_status      = params_lookup( 'service_status' ),
-  $process             = params_lookup( 'process' ),
-  $process_args        = params_lookup( 'process_args' ),
-  $process_user        = params_lookup( 'process_user' ),
-  $config_dir          = params_lookup( 'config_dir' ),
-  $config_file         = params_lookup( 'config_file' ),
-  $config_file_mode    = params_lookup( 'config_file_mode' ),
-  $config_file_owner   = params_lookup( 'config_file_owner' ),
-  $config_file_group   = params_lookup( 'config_file_group' ),
-  $config_file_init    = params_lookup( 'config_file_init' ),
-  $pid_file            = params_lookup( 'pid_file' ),
-  $data_dir            = params_lookup( 'data_dir' ),
-  $log_dir             = params_lookup( 'log_dir' ),
-  $log_file            = params_lookup( 'log_file' ),
-  $port                = params_lookup( 'port' ),
-  $protocol            = params_lookup( 'protocol' )
+  $root_password        = params_lookup( 'root_password' ),
+  $password_salt        = params_lookup( 'password_salt' ),
+  $post_remove_commmand = params_lookup( 'post_remove_commmand' ),
+  $my_class             = params_lookup( 'my_class' ),
+  $source               = params_lookup( 'source' ),
+  $source_dir           = params_lookup( 'source_dir' ),
+  $source_dir_purge     = params_lookup( 'source_dir_purge' ),
+  $template             = params_lookup( 'template' ),
+  $service_autorestart  = params_lookup( 'service_autorestart' , 'global' ),
+  $service_manage       = params_lookup( 'service_manage' ),
+  $options              = params_lookup( 'options' ),
+  $version              = params_lookup( 'version' ),
+  $absent               = params_lookup( 'absent' ),
+  $disable              = params_lookup( 'disable' ),
+  $disableboot          = params_lookup( 'disableboot' ),
+  $monitor              = params_lookup( 'monitor' , 'global' ),
+  $monitor_tool         = params_lookup( 'monitor_tool' , 'global' ),
+  $monitor_target       = params_lookup( 'monitor_target' , 'global' ),
+  $puppi                = params_lookup( 'puppi' , 'global' ),
+  $puppi_helper         = params_lookup( 'puppi_helper' , 'global' ),
+  $firewall             = params_lookup( 'firewall' , 'global' ),
+  $firewall_tool        = params_lookup( 'firewall_tool' , 'global' ),
+  $firewall_src         = params_lookup( 'firewall_src' , 'global' ),
+  $firewall_dst         = params_lookup( 'firewall_dst' , 'global' ),
+  $debug                = params_lookup( 'debug' , 'global' ),
+  $audit_only           = params_lookup( 'audit_only' , 'global' ),
+  $package              = params_lookup( 'package' ),
+  $service              = params_lookup( 'service' ),
+  $service_status       = params_lookup( 'service_status' ),
+  $process              = params_lookup( 'process' ),
+  $process_args         = params_lookup( 'process_args' ),
+  $process_user         = params_lookup( 'process_user' ),
+  $config_dir           = params_lookup( 'config_dir' ),
+  $config_file          = params_lookup( 'config_file' ),
+  $config_file_mode     = params_lookup( 'config_file_mode' ),
+  $config_file_owner    = params_lookup( 'config_file_owner' ),
+  $config_file_group    = params_lookup( 'config_file_group' ),
+  $config_file_init     = params_lookup( 'config_file_init' ),
+  $pid_file             = params_lookup( 'pid_file' ),
+  $data_dir             = params_lookup( 'data_dir' ),
+  $log_dir              = params_lookup( 'log_dir' ),
+  $log_file             = params_lookup( 'log_file' ),
+  $port                 = params_lookup( 'port' ),
+  $protocol             = params_lookup( 'protocol' )
   ) inherits mysql::params {
 
   $bool_source_dir_purge=any2bool($source_dir_purge)
@@ -295,6 +299,17 @@ class mysql (
   $manage_package = $mysql::bool_absent ? {
     true  => 'absent',
     false => $mysql::version,
+  }
+  $manage_package_name = $bool_absent ? {
+    true  => $mysql::package ? {
+      $mysql::params::package => $package_server_remove,
+      default                 => $mysql::package,
+    },
+    false => $mysql::package,
+  }
+  $manage_package_notify = $bool_absent ? {
+    true  => Exec['post-remove'],
+    false => undef,
   }
 
   $manage_service_enable = $mysql::bool_disableboot ? {
@@ -366,7 +381,12 @@ class mysql (
   ### Managed resources
   package { 'mysql':
     ensure => $mysql::manage_package,
-    name   => $mysql::package,
+    name   => $mysql::manage_package_name,
+    notify => $mysql::manage_package_notify
+  }
+  exec { 'post-remove':
+    command     => $mysql::post_remove_commmand,
+    refreshonly => true
   }
 
   if $mysql::bool_absent == false {

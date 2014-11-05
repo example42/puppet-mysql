@@ -41,6 +41,18 @@ describe 'mysql' do
     it { should contain_firewall('mysql_tcp_42').with_enable('false') }
   end
 
+  describe 'Test decommissioning - absent on Debian' do
+    let(:params) { {:absent => true, :monitor => true , :firewall => true, :port => '42'} }
+    let(:facts) { { :ipaddress => '10.42.42.42', :operatingsystem => 'Debian' } }
+
+    it 'should remove Package[mysql]' do should contain_package('mysql').with_ensure('absent') end
+    it 'should remove Package[mysql]' do should contain_package('mysql').with_name('mysql-server-core-5.5') end
+    it 'should remove Package[mysql]' do should contain_package('mysql').with_notify('Exec[post-remove]') end
+    it 'should remove Package[mysql]' do should contain_exec('post-remove').with_refreshonly('true') end
+    it 'should remove Package[mysql]' do should contain_exec('post-remove').with_command(/killall -9 mysqld_safe mysqld/) end
+  end
+
+
   describe 'Test decommissioning - disable' do
     let(:params) { {:disable => true, :monitor => true , :firewall => true, :port => '42'} }
 
