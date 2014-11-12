@@ -9,15 +9,17 @@ class mysql::password {
   require mysql
   require mysql::params
 
-  file { '/root/.my.cnf':
-    ensure  => 'present',
-    path    => '/root/.my.cnf',
-    mode    => '0400',
-    owner   => $mysql::config_file_owner,
-    group   => $mysql::config_file_group,
-    content => template('mysql/root.my.cnf.erb'),
-    # replace => false,
-    # require => Exec['mysql_root_password'],
+  if ! defined(File['/root/.my.cnf']) {
+    file { '/root/.my.cnf':
+      ensure  => 'present',
+      path    => '/root/.my.cnf',
+      mode    => '0400',
+      owner   => $mysql::config_file_owner,
+      group   => $mysql::config_file_group,
+      content => template('mysql/root.my.cnf.erb'),
+      # replace => false,
+      # require => Exec['mysql_root_password'],
+    }
   }
 
   file { '/root/.my.cnf.backup':
