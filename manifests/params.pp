@@ -125,5 +125,7 @@ class mysql::params {
   $puppi_helper = 'standard'
   $debug = false
   $audit_only = false
+  $grants = {}
+  $users = {}
 
 }

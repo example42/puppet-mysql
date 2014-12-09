@@ -264,7 +264,9 @@ class mysql (
   $log_dir             = params_lookup( 'log_dir' ),
   $log_file            = params_lookup( 'log_file' ),
   $port                = params_lookup( 'port' ),
-  $protocol            = params_lookup( 'protocol' )
+  $protocol            = params_lookup( 'protocol' ),
+  $grants              = params_lookup( 'grants' ),
+  $users               = params_lookup( 'users' )
   ) inherits mysql::params {
 
   $bool_source_dir_purge=any2bool($source_dir_purge)
@@ -413,6 +415,17 @@ class mysql (
   ### Include custom class if $my_class is set
   if $mysql::my_class {
     include $mysql::my_class
+  }
+
+  ### Create instances for integration with Hiera
+  if $grants != {} {
+    validate_hash($grants)
+    create_resources(mysql::grant, $grants)
+  }
+
+  if $users != {} {
+    validate_hash($users)
+    create_resources(mysql::user, $users)
   }
 
 
