@@ -127,4 +127,50 @@ FLUSH PRIVILEGES ;
     it { should contain_file('mysqlgrant-someuser-10.42.42.0_255.255.255.0-all.sql').with_content(/REVOKE ALL ON \*\.\* FROM 'someuser'@'10.42.42.0\/255.255.255.0';/) }
     it { should contain_file('mysqlgrant-someuser-10.42.42.0_255.255.255.0-all.sql').with_content(/FLUSH PRIVILEGES;/) }
   end
+
+  describe 'Test grant with initial data' do
+    let(:params) { {
+      :name                     => 'sample1',
+      :mysql_db                 => 'example_db',
+      :mysql_user               => 'someuser',
+      :mysql_password           => 'somepassword',
+      :mysql_db_init_query_file => '/example/42.sql',
+    } }
+
+    it { should contain_mysql__queryfile('mysql_db_init_query_file-localhost-example_db').with_mysql_file('/example/42.sql') }
+    it { should contain_mysql__queryfile('mysql_db_init_query_file-localhost-example_db').with_mysql_host('localhost') }
+  end
+
+  describe 'Test grant with initial data' do
+    let(:params) { {
+      :name                     => 'sample1',
+      :mysql_db                 => 'example_db',
+      :mysql_host               => '10.42.42.0/255.255.255.0',
+      :mysql_user               => 'someuser',
+      :mysql_password           => 'somepassword',
+      :mysql_db_init_query_file => '/example/42.sql',
+    } }
+
+    it { should contain_mysql__queryfile('mysql_db_init_query_file-10.42.42.0_255.255.255.0-example_db').with_mysql_file('/example/42.sql') }
+    it { should contain_mysql__queryfile('mysql_db_init_query_file-10.42.42.0_255.255.255.0-example_db').with_mysql_host('localhost') }
+  end
+
+  describe 'Test grant with initial data' do
+    let(:params) { {
+      :name                     => 'sample1',
+      :mysql_db                 => 'example_db',
+      :mysql_host               => '10.42.42.0/255.255.255.0',
+      :mysql_user               => 'someuser',
+      :mysql_password           => 'somepassword',
+      :mysql_db_init_query_file => '/example/42.sql',
+      :remote_host              => '10.42.42.42',
+      :remote_user              => 'user42',
+      :remote_password          => 'pass42',
+    } }
+
+    it { should contain_mysql__queryfile('mysql_db_init_query_file-10.42.42.0_255.255.255.0-example_db').with_mysql_file('/example/42.sql') }
+    it { should contain_mysql__queryfile('mysql_db_init_query_file-10.42.42.0_255.255.255.0-example_db').with_mysql_host('10.42.42.42') }
+    it { should contain_mysql__queryfile('mysql_db_init_query_file-10.42.42.0_255.255.255.0-example_db').with_mysql_user('user42') }
+    it { should contain_mysql__queryfile('mysql_db_init_query_file-10.42.42.0_255.255.255.0-example_db').with_mysql_password('pass42') }
+  end
 end
