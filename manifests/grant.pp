@@ -90,6 +90,11 @@ define mysql::grant (
     default  => any2bool($mysql_create_db)
   }
 
+  $manage_remote_host = $remote_host ? {
+    ''      => 'localhost',
+    default => $remote_host,
+  }
+
   if (!defined(File[$mysql_grant_filepath])) {
     file { $mysql_grant_filepath:
       ensure => directory,
@@ -125,7 +130,6 @@ define mysql::grant (
     default => undef,
   }
 
-
   exec { "mysqlgrant-${mysql_user}-${nice_mysql_host}-${dbname}":
     command     => $exec_command,
     require     => $exec_require,
@@ -137,10 +141,10 @@ define mysql::grant (
   if $mysql_db_init_query_file != '' and $mysql_create_db == true {
     mysql::queryfile { "mysql_db_init_query_file-${nice_mysql_host}-${dbname}":
       mysql_file     => $mysql_db_init_query_file,
-      mysql_user     => $mysql_user,
-      mysql_password => $mysql_password,
-      mysql_db       => $mysql_db,
-      mysql_host     => $mysql_host,
+      mysql_user     => $remote_user,
+      mysql_password => $remote_password,
+      mysql_db       => $dbname,
+      mysql_host     => $manage_remote_host,
       subscribe      => Exec["mysqlgrant-${mysql_user}-${nice_mysql_host}-${dbname}"],
     }
   }
