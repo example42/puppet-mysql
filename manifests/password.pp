@@ -6,7 +6,7 @@
 class mysql::password {
 
   # Load the variables used in this module. Check the params.pp file
-  require mysql
+  include mysql
   require mysql::params
 
   if ! defined(File['/root/.my.cnf']) {
