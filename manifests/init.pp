@@ -223,6 +223,7 @@
 #
 class mysql (
   $root_password       = params_lookup( 'root_password' ),
+  $root_cnf_template   = params_lookup( 'root_cnf_template' ),
   $password_salt       = params_lookup( 'password_salt' ),
   $my_class            = params_lookup( 'my_class' ),
   $source              = params_lookup( 'source' ),
