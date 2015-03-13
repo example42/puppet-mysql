@@ -1,24 +1,42 @@
 language: ruby
+bundler_args: --without development
 rvm:
   - 1.8.7
   - 1.9.3
+  - 2.0.0
+  - 2.1.1
 script:
-  - "rake spec SPEC_OPTS='--format documentation'"
+  - "bundle exec rake validate lint spec SPEC_OPTS='--format documentation'"
 env:
-  - PUPPET_VERSION="~> 2.6.0"
   - PUPPET_VERSION="~> 2.7.0"
-  - PUPPET_VERSION="~> 3.0.0"
+  - PUPPET_VERSION="~> 3.1.0"
+  - PUPPET_VERSION="~> 3.2.0"
+  - PUPPET_VERSION="~> 3.3.0"
   - PUPPET_VERSION="~> 3.4.0"
+  - PUPPET_VERSION="~> 3.5.0"
+  - PUPPET_VERSION="~> 3.6.0"
+  - PUPPET_VERSION="~> 3.7.0"
 matrix:
   exclude:
-    - rvm: 1.9.3
-      env: PUPPET_VERSION="~> 2.6.0"
-      gemfile: .gemfile.travis
+    # fails on can't convert String into Integer at init.pp:284
+    # fqdn_rand patch in
     - rvm: 1.9.3
       env: PUPPET_VERSION="~> 2.7.0"
-      gemfile: .gemfile.travis
-
-gemfile: .gemfile
+    # fails on "Could not autoload package: constant Puppet::Type::Package"
+    - rvm: 2.0.0
+      env: PUPPET_VERSION="~> 3.1.0"
+    # fails on iconv couldn't be loaded, which is required for UTF-8/UTF-16 conversions
+    - rvm: 2.0.0
+      env: PUPPET_VERSION="~> 2.7.0"
+    - rvm: 2.1.1
+      env: PUPPET_VERSION="~> 2.7.0"
+    # fails on "can't modify frozen Symbol"
+    - rvm: 2.1.1
+      env: PUPPET_VERSION="~> 3.1.0"
+    - rvm: 2.1.1
+      env: PUPPET_VERSION="~> 3.2.0"
+    - rvm: 2.1.1
+      env: PUPPET_VERSION="~> 3.3.0"
 notifications:
   email:
     - al@lab42.it
