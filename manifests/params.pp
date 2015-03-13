@@ -126,7 +126,10 @@ class mysql::params {
   $puppi_helper = 'standard'
   $debug = false
   $audit_only = false
-  $grants = {}
-  $users = {}
+  $grant_hash = {}
+  $user_hash = {}
+  $augeas_hash = {}
+  $query_hash = {}
+  $queryfile_hash = {}
 
 }
