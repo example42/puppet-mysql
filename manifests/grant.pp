@@ -49,7 +49,7 @@ define mysql::grant (
   ) {
 
   if $remote_host == '' {
-    require mysql
+    include mysql
   }
 
   $dbname = $mysql_db ? {
