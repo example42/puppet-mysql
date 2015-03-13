@@ -35,7 +35,7 @@ For detailed info about the logic and usage patterns of Example42 modules read R
 The simplest way to create database is the following.
 
         mysql::grant { 'db1':
-          mysql_user => 'myusername',
+          mysql_user     => 'myusername',
           mysql_password => 'mypassword',
         }
 
@@ -45,7 +45,7 @@ This will create a MySQL database named 'db1' with a MySQL grant allowing full a
 If you want to customize the host the new user can connect from you have to use the 'mysql\_host'.
 
         mysql::grant { 'db1':
-          mysql_username => 'myusername',
+          mysql_user     => 'myusername',
           mysql_password => 'mypassword',
           mysql_host     => '10.42.42.0/255.255.255.0',
         }
@@ -56,7 +56,7 @@ Here the whole 10.42.42.0/24 can connect.
 For privileges customization there is the 'mysql\_privileges' parameter.
 
         mysql::grant { 'db1':
-          mysql_username   => 'myusername',
+          mysql_user       => 'myusername',
           mysql_password   => 'mypassword',
           mysql_privileges => 'SELECT',
         }
@@ -68,7 +68,7 @@ Like for standard puppet resource you can use the 'ensure' parameter in order to
 
         mysql::grant { 'db1':
           ensure         => 'absent',
-          mysql_username => 'myusername',
+          mysql_user     => 'myusername',
           mysql_password => 'mypassword',
         }
 
@@ -79,7 +79,7 @@ The mysql\_db\_init\_query\_file is an optional parameter allowing to specify a 
 
         mysql::grant { 'db1':
           ensure                   => 'absent',
-          mysql_username           => 'myusername',
+          mysql_user               => 'myusername',
           mysql_password           => 'mypassword',
           mysql_db_init_query_file => '/full/path/to/the/schema.sql',
         }
@@ -161,6 +161,26 @@ __NOTE__: The SQL file should already be uploaded on mysql server host.
           my_class => 'mysql::example42',
         }
 
+## USAGE - Hiera Support
+* Manage MySQL configuration using Hiera
+
+```yaml
+mysql::template: 'modules/mysql/my.cnf.erb'
+mysql::root_password: 'example42'
+mysql::options:
+  port: '3306'
+  bind-address: '127.0.0.1'
+```
+
+* Defining MySQL resources using Hiera
+
+```yaml
+mysql::grant_hash:
+  'db1':
+    mysql_user: 'myusername'
+    mysql_password: 'mypassword'
+    mysql_host: '10.42.42.0/255.255.255.0'
+```
 
 ## USAGE - Example42 extensions management
 * Activate puppi (recommended, but disabled by default)

@@ -266,8 +266,11 @@ class mysql (
   $log_file            = params_lookup( 'log_file' ),
   $port                = params_lookup( 'port' ),
   $protocol            = params_lookup( 'protocol' ),
-  $grants              = params_lookup( 'grants' ),
-  $users               = params_lookup( 'users' )
+  $augeas_hash         = params_lookup( 'augeas_hash'),
+  $grant_hash          = params_lookup( 'grant_hash'),
+  $query_hash          = params_lookup( 'query_hash'),
+  $queryfile_hash      = params_lookup( 'queryfile_hash'),
+  $user_hash           = params_lookup( 'user_hash'),
   ) inherits mysql::params {
 
   $bool_source_dir_purge=any2bool($source_dir_purge)
@@ -282,6 +285,28 @@ class mysql (
   $bool_debug=any2bool($debug)
   $bool_audit_only=any2bool($audit_only)
 
+  ## Integration with Hiera
+  if $augeas_hash != {} {
+    validate_hash($augeas_hash)
+    create_resources('mysql::augeas', $augeas_hash)
+  }
+  if $grant_hash != {} {
+    validate_hash($grant_hash)
+    create_resources('mysql::grant', $grant_hash)
+  }
+  if $query_hash != {} {
+    validate_hash($query_hash)
+    create_resources('mysql::query', $query_hash)
+  }
+  if $queryfile_hash != {} {
+    validate_hash($queryfile_hash)
+    create_resources('mysql::queryfile', $queryfile_hash)
+  }
+  if $user_hash != {} {
+    validate_hash($user_hash)
+    create_resources('mysql::user', $user_hash)
+  }
+  
   ### Root password setup
   $random_password = $mysql::password_salt ? {
     ''       => fqdn_rand(100000000000),
@@ -374,12 +399,12 @@ class mysql (
 
   if $mysql::bool_absent == false {
     service { 'mysql':
-      ensure     => $mysql::manage_service_ensure,
-      name       => $mysql::service,
-      enable     => $mysql::manage_service_enable,
-      hasstatus  => $mysql::service_status,
-      pattern    => $mysql::process,
-      require    => [ Package['mysql'] , File['mysql.conf'] ]
+      ensure    => $mysql::manage_service_ensure,
+      name      => $mysql::service,
+      enable    => $mysql::manage_service_enable,
+      hasstatus => $mysql::service_status,
+      pattern   => $mysql::process,
+      require   => [ Package['mysql'] , File['mysql.conf'] ]
     }
   }
 
@@ -417,18 +442,6 @@ class mysql (
   if $mysql::my_class {
     include $mysql::my_class
   }
-
-  ### Create instances for integration with Hiera
-  if $grants != {} {
-    validate_hash($grants)
-    create_resources(mysql::grant, $grants)
-  }
-
-  if $users != {} {
-    validate_hash($users)
-    create_resources(mysql::user, $users)
-  }
-
 
   ### Provide puppi data, if enabled ( puppi => true )
   if $mysql::bool_puppi == true {
