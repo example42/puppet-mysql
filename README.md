@@ -35,7 +35,7 @@ For detailed info about the logic and usage patterns of Example42 modules read R
 The simplest way to create database is the following.
 
         mysql::grant { 'db1':
-          mysql_username => 'myusername',
+          mysql_user => 'myusername',
           mysql_password => 'mypassword',
         }
 

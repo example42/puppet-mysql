@@ -16,6 +16,7 @@ class mysql::params {
 
   ### Module specific parameters
   $root_password = ''
+  $root_cnf_template = 'mysql/root.my.cnf.erb'
   $password_salt = ''
 
   ### Application related parameters
@@ -125,5 +126,7 @@ class mysql::params {
   $puppi_helper = 'standard'
   $debug = false
   $audit_only = false
+  $grants = {}
+  $users = {}
 
 }

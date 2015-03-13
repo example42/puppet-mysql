@@ -6,7 +6,7 @@
 class mysql::password {
 
   # Load the variables used in this module. Check the params.pp file
-  require mysql
+  include mysql
   require mysql::params
 
   if ! defined(File['/root/.my.cnf']) {
@@ -16,7 +16,7 @@ class mysql::password {
       mode    => '0400',
       owner   => $mysql::config_file_owner,
       group   => $mysql::config_file_group,
-      content => template('mysql/root.my.cnf.erb'),
+      content => template($mysql::root_cnf_template),
       # replace => false,
       # require => Exec['mysql_root_password'],
     }
