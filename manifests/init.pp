@@ -423,7 +423,7 @@ class mysql (
   }
 
   # The whole mysql configuration directory can be recursively overriden
-  if $mysql::source_dir {
+  if $mysql::source_dir != '' {
     file { 'mysql.dir':
       ensure  => directory,
       path    => $mysql::config_dir,
@@ -439,7 +439,7 @@ class mysql (
 
 
   ### Include custom class if $my_class is set
-  if $mysql::my_class {
+  if $mysql::my_class != '' {
     include $mysql::my_class
   }
 
