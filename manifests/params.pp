@@ -113,6 +113,7 @@ class mysql::params {
   $absent = false
   $disable = false
   $disableboot = false
+  $socket = ''
 
   ### General module variables that can have a site or per module default
   $monitor = false
