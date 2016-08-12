@@ -1,6 +1,6 @@
 {
   "name": "example42-mysql",
-  "version": "2.1.7",
+  "version": "2.1.8",
   "summary": "Puppet module for mysql",
   "author": "Alessandro Franceschi",
   "description": "This module installs and manages mysql. Check README.rdoc for details. Puppi is required for some common functions: you can install them without using the whole module. Monitor and firewall dependencies are needed only if the relevant features are enabled",
